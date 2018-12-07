@@ -5,7 +5,7 @@ output:
   github_document: default
 title: "Advertisement Placement in Mobile Applications"
 author: "Chase Baggett"
-geometry: margin=2cm
+geometry: margin=1.8cm
 fontfamily: mathpazo
 fontsize: 11pt
 endnote: no
@@ -16,6 +16,7 @@ mainfont: Times New Roman
 options(scipen=999)
 library(data.table)
 library(car)
+library(broom)
 library(ggpubr)
 library(kableExtra)
 library(lsmeans)
@@ -44,10 +45,10 @@ It is a crossed factoral observational data Every adertisement has an associated
 There are a total of four variables in the data.
 
 |Variable | Structure  | Type  | Lvls | Description |
-|------------|---------|------|---|---------------------------------------|
-| Clicks  | Continuous|Response| NA | The nunber of times the advertisement was clicked. |
-| Views      | Continuous | Fixed | NA | The number of times a given advertisement was viewed. |
-| Position | Factor | Fixed | 3 | The position on the site of the advertisement. |
+|-------|---------|------|---|----------------------------------------------------------|
+| Clicks| Continuous|Response| NA | The nunber of times the advertisement was clicked. |
+| Views| Continuous | Fixed | NA | The number of times a given advertisement was viewed. |
+| Position| Factor | Fixed | 3 | The position on the site of the advertisement. |
 | Unknown | Factor | Fixed | 7 | An unkown anonymized categorical variable. |
 
 
@@ -96,7 +97,7 @@ Now, we have established the slope is non-zero, but we have not established that
 
 $H_0: \beta_3 = 0$ vs $H_a: \beta_3 \ne 0$
 
-As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope are not equal, and therefore must use a different slopes model. 
+As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope are not equal, and therefore must use a different slopes model, because the interaction term is significant. 
 
 ```{r,echo=F}
 all_zero <- lm(Clicks~Views + Position + Views*Position,data=click_through)
@@ -269,19 +270,23 @@ ggplot(pos_means_letters,
 
 #Conclusion
 
-We've established that clicks do increase with views, and that position as well as our unknown category both effect the mean as well as the slope between click and views. Considering the unknown category as a fixed and unchangeable variable, we can provide guidance to advertisers that banner position 0 has a significantly higher click-through-rate as compared to banner position 1 and 2. Given the granularity of this data I could reaggregate the data and instead of treating the entire 240 hours as one time period, and perform a repeated measures study to adjust for the time the advertisement was ran. IF I were to continue on this path of research, that would be my next step. Knowing the most beneficial advertisement within a mobile application could provide considerible value to advertisers.
+We've established that clicks do increase with views, and that position as well as our unknown category both effect the mean as well as the slope between click and views. Considering the unknown category as a fixed and unchangeable variable, we can provide guidance to advertisers that banner position 0 has a significantly higher click-through-rate as compared to banner position 1 and 2. Knowing the most beneficial advertisement within a mobile application could provide considerible value to advertisers. 
 
 \newpage
-#Data, Code, and Notes
+
+#Appendix
 
 Location of the Raw Data: https://www.kaggle.com/c/avazu-ctr-prediction
 Full Code and Aggregated Data on Github: https://github.com/cbagg/avazu_click_through
 
 The entire project was performed in R.
 
-The entire document is reproducible via the R code and included data on github. 
+The entire document is reproducible via the R code and included data on github, provided the right packages are installed on the machine. 
 
-#Appendix
+##Notes
+I conducted my study only on app category 07d7df22 and banner_position 0,1,2, taking the others out of the study because they were so rare it created missing data in the comnbinations. Over 35 milllion clicks remained. I aggredated those clicks into a dataset with 2,068 records, once for each application. Because it is click log data I could have reobserved the data at the app, site, or other levels, and chose to observe it at the application level because that seemed most logical to me. I consider this data more akin to a video feed-- there are many things I could have observed from it because it is extremely granular.
+
+I could not test the interaction term between Views,Unknown and Position because some combinations had only a click of zero. 
 
 ##Table for Tukey Means
 
