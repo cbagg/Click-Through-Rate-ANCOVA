@@ -78,167 +78,910 @@ As we can see below, there are some very clear and identifiable linear trends in
 
 <img src="Avazu_Click_Through_Rate_Analysis_files/figure-markdown_github/unnamed-chunk-2-1.png" style="display: block; margin: auto;" />
 
-Methods & Tests
+Picking a Model
 ===============
 
-All Equal Slopes Equal to Zero
-==============================
+Slopes Equal to Zero
+--------------------
 
 In order to know which kind of model to fit, we must first test the slope of Click to Views. If we establish the slope is zero, we can use an ANOVA model, but if the slope is non-zero, we must use an ANCOVA model.
 
 For a function of *y* = *β*<sub>0</sub> + *β*<sub>1</sub>*V**i**e**w**s*:
 
-*H*<sub>*o*</sub> : *β*<sub>1</sub> = 0 *H*<sub>*a*</sub> : *β*<sub>1</sub> ≠ 0
+*H*<sub>0</sub> : *β*<sub>1</sub> = 0 vs *H*<sub>*a*</sub> : *β*<sub>1</sub> ≠ 0
 
 As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope is non-zero. This means we must use an ANCOVA model to account for the covariate.
 
-|           |    Df|    Sum.Sq|     Mean.Sq|   F.value|  Pr..F.|
-|-----------|-----:|---------:|-----------:|---------:|-------:|
-| Views     |     1|   9894694|  9894694.31|  363.2439|       0|
-| Residuals |  2066|  56277446|    27239.81|        NA|      NA|
-
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Mean.Sq
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Views
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9894694
+</td>
+<td style="text-align:right;">
+9894694.31
+</td>
+<td style="text-align:right;">
+363.2439
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Residuals
+</td>
+<td style="text-align:right;">
+2066
+</td>
+<td style="text-align:right;">
+56277446
+</td>
+<td style="text-align:right;">
+27239.81
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 All Slopes Equal by Position
-============================
+----------------------------
 
 Now, we have established the slope is non-zero, but we have not established that the slopes are different. We must use this to decide to use an equal or different slopes model. For a function of *y* = *β*<sub>0</sub> + *β*<sub>1</sub>*V**i**e**w**s* + *β*<sub>2</sub>*P**o**s**i**t**i**o**n* + *β*<sub>3</sub>*V**i**e**w**s* \* *P**o**s**i**t**i**o**n*:
 
-*H*<sub>*o*</sub> : *β*<sub>3</sub> = 0 *H*<sub>*a*</sub> : *β*<sub>3</sub> ≠ 0
+*H*<sub>0</sub> : *β*<sub>3</sub> = 0 vs *H*<sub>*a*</sub> : *β*<sub>3</sub> ≠ 0
 
 As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope are not equal, and therefore must use a different slopes model.
 
-|                |    Df|      Sum.Sq|     Mean.Sq|    F.value|    Pr..F.|
-|----------------|-----:|-----------:|-----------:|----------:|---------:|
-| Views          |     1|   9894694.3|  9894694.31|  444.03969|  0.00e+00|
-| Position       |     2|   9821046.5|  4910523.24|  220.36731|  0.00e+00|
-| Views:Position |     2|    508120.2|   254060.08|   11.40134|  1.19e-05|
-| Residuals      |  2062|  45948279.4|    22283.36|         NA|        NA|
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Mean.Sq
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Views
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9894694.3
+</td>
+<td style="text-align:right;">
+9894694.31
+</td>
+<td style="text-align:right;">
+444.03969
+</td>
+<td style="text-align:right;">
+0.00e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Position
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9821046.5
+</td>
+<td style="text-align:right;">
+4910523.24
+</td>
+<td style="text-align:right;">
+220.36731
+</td>
+<td style="text-align:right;">
+0.00e+00
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Views:Position
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+508120.2
+</td>
+<td style="text-align:right;">
+254060.08
+</td>
+<td style="text-align:right;">
+11.40134
+</td>
+<td style="text-align:right;">
+1.19e-05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Residuals
+</td>
+<td style="text-align:right;">
+2062
+</td>
+<td style="text-align:right;">
+45948279.4
+</td>
+<td style="text-align:right;">
+22283.36
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+Unequal Slopes ANCOVA
+=====================
 
-Full ANCOVA Model
-=================
+I am using a generalized linear model of the following form to conduct the ANCOVA.
 
-Now I add Unknown category to the model and test the equal slopes assumption for the Unknown category. For a function of
+$y = \\beta\_0 + \\beta\_1Views + \\beta\_2Position\_1 + \\\\ \\beta\_3Position\_2 + \\beta\_4Position\_3 + \\beta\_5Unknown\_1 + \\beta\_6Unknown\_2 + \\beta\_7Unknown\_3 + \\beta\_8Unknown\_4 + \\beta\_9Unknown\_5 + \\beta\_10Unknown\_6 + \\beta\_{11}Unknown\_7 + Views \\times ( \\beta\_{12}Position\_1 + \\beta\_{13}Position\_2 + \\beta\_{14}Position\_3 + \\beta\_{15}Unknown\_1 + \\beta\_{16}Unknown\_2 + \\beta\_{17}Unknown\_3 + \\beta\_{18}Unknown\_4 + \\beta\_{19}Unknown\_5 + \\beta\_{20}Unknown\_6 + \\beta\_{21}Unknown\_7)$
 
-*y* = *β*<sub>0</sub> + *β*<sub>1</sub>*V**i**e**w**s* + *β*<sub>2</sub>*P**o**s**i**t**i**o**n* + *β*<sub>3</sub>*U**n**k**n**o**w**n* + *β*<sub>4</sub>*V**i**e**w**s* \* *P**o**s**i**t**i**o**n* + *β*<sub>5</sub>*U**n**k**n**o**w**n* \* *V**i**e**w**s*
-
-|                |        Sum.Sq|    Df|      F.value|     Pr..F.|
-|----------------|-------------:|-----:|------------:|----------:|
-| (Intercept)    |  2.412948e-01|     1|    0.0002007|  0.9886990|
-| Views          |  6.330415e+00|     1|    0.0052647|  0.9421649|
-| Position       |  5.180047e+04|     2|   21.5398731|  0.0000000|
-| Unknown        |  1.205651e+06|     5|  200.5354313|  0.0000000|
-| Views:Position |  9.821525e+05|     2|  408.4024562|  0.0000000|
-| Views:Unknown  |  4.993376e+06|     5|  830.5459770|  0.0000000|
-| Residuals      |  2.467391e+06|  2052|           NA|         NA|
-
+The Type 3 Test of Fixed Effects is Below. The model has added significant terms for the Unknown category, as well as the interraction term.
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+2.412948e-01
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0002007
+</td>
+<td style="text-align:right;">
+0.9886990
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Views
+</td>
+<td style="text-align:right;">
+6.330415e+00
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0052647
+</td>
+<td style="text-align:right;">
+0.9421649
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Position
+</td>
+<td style="text-align:right;">
+5.180047e+04
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+21.5398731
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+1.205651e+06
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+200.5354313
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Views:Position
+</td>
+<td style="text-align:right;">
+9.821525e+05
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+408.4024562
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Views:Unknown
+</td>
+<td style="text-align:right;">
+4.993376e+06
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+830.5459770
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Residuals
+</td>
+<td style="text-align:right;">
+2.467391e+06
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
 Hypothesis Tests
-================
+----------------
 
 This model has Five Hypothesis Tests.
 
 Test for Intercept
 ------------------
 
-*H*<sub>0</sub> : *β*<sub>0</sub> = 0 *H*<sub>*a*</sub> : *β*<sub>0</sub> ≠ 0
+*H*<sub>0</sub> : *β*<sub>0</sub> = 0 vs *H*<sub>*a*</sub> : *β*<sub>0</sub> ≠ 0
+
 Outcome: Reject the Null in Favor of the Alternative
-
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[1,])
-```
-
-|             |     Sum.Sq|   Df|    F.value|    Pr..F.|
-|-------------|----------:|----:|----------:|---------:|
-| (Intercept) |  0.2412948|    1|  0.0002007|  0.988699|
-
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+(Intercept)
+</td>
+<td style="text-align:right;">
+0.2412948
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0002007
+</td>
+<td style="text-align:right;">
+0.988699
+</td>
+</tr>
+</tbody>
+</table>
 Test For Slope Across Factors
 -----------------------------
 
-*H*<sub>0</sub> : *β*<sub>1</sub> = 0 *H*<sub>*a*</sub> : *β*<sub>1</sub> ≠ 0
-Outcome: Fail to Reject the Null. We could think of this as no slope between click and views in common across the factors.
+*H*<sub>0</sub> : *β*<sub>1</sub> = 0
 
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[2,])
-```
+*H*<sub>*a*</sub> : *β*<sub>1</sub> ≠ 0
 
-|       |    Sum.Sq|   Df|    F.value|     Pr..F.|
-|-------|---------:|----:|----------:|----------:|
-| Views |  6.330415|    1|  0.0052647|  0.9421649|
-
+Outcome: Fail to Reject the Null. We could think of this as no slope between click and views in common across the factors. The interaction terms are significant so it stays in the model.
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Views
+</td>
+<td style="text-align:right;">
+6.330415
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0052647
+</td>
+<td style="text-align:right;">
+0.9421649
+</td>
+</tr>
+</tbody>
+</table>
 Test for Position Mean
 ----------------------
 
-*H*<sub>0</sub> : *μ*<sub>1</sub> = *μ*<sub>2</sub> = *μ*<sub>3</sub> *H*<sub>*a*</sub>: At Least One Inequality Outcome: Reject the null in favor of the alternative.
+*H*<sub>0</sub> : *μ*<sub>1</sub> = *μ*<sub>2</sub> = *μ*<sub>3</sub> vs *H*<sub>*a*</sub>: At Least One Inequality
 
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[3,])
-```
-
-|          |    Sum.Sq|   Df|   F.value|  Pr..F.|
-|----------|---------:|----:|---------:|-------:|
-| Position |  51800.47|    2|  21.53987|       0|
-
+Outcome: Reject the null in favor of the alternative.
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Position
+</td>
+<td style="text-align:right;">
+51800.47
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+21.53987
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 Test for Unknown Category Mean
 ------------------------------
 
-*H*<sub>0</sub> : *μ*<sub>1</sub> = *μ*<sub>2</sub> = *μ*<sub>3</sub> = *μ*<sub>4</sub> = *μ*<sub>5</sub> = *μ*<sub>6</sub> = *μ*<sub>7</sub> *H*<sub>*a*</sub>: At Least one Inequality Outcome: Reject the null in favor of the alternative.
+*H*<sub>0</sub> : *μ*<sub>1</sub> = *μ*<sub>2</sub> = *μ*<sub>3</sub> = *μ*<sub>4</sub> = *μ*<sub>5</sub> = *μ*<sub>6</sub> = *μ*<sub>7</sub> vs *H*<sub>*a*</sub>: At Least one Inequality
 
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[4,])
-```
-
-|         |   Sum.Sq|   Df|   F.value|  Pr..F.|
-|---------|--------:|----:|---------:|-------:|
-| Unknown |  1205651|    5|  200.5354|       0|
-
+Outcome: Reject the null in favor of the alternative.
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Unknown
+</td>
+<td style="text-align:right;">
+1205651
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+200.5354
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 Test for Difference in Slope by Position
 ----------------------------------------
 
-*H*<sub>0</sub>: All Positions Have the Same Slope With relations to Views. *H*<sub>*a*</sub>: At Least One Inequality amongst the factor levels.
+*H*<sub>0</sub>: All Positions Have the Same Slope With relations to Views vs *H*<sub>*a*</sub>: At Least One Inequality amongst the factor levels.
 
 Outcome: Reject the null in favor of the alternative.
 
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[5,])
-```
-
-|                |    Sum.Sq|   Df|   F.value|  Pr..F.|
-|----------------|---------:|----:|---------:|-------:|
-| Views:Position |  982152.5|    2|  408.4025|       0|
-
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Views:Position
+</td>
+<td style="text-align:right;">
+982152.5
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+408.4025
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 Test for Difference in Slope by Unknown Category
 ------------------------------------------------
 
 Where *P**o**s**i**t**i**o**n*<sub>1</sub>,*P**o**s**i**t**i**o**n*<sub>2</sub>, and *P**o**s**i**t**i**o**n*<sub>3</sub> are 0/1 variables for category.
 
-*H*<sub>0</sub>: All Positions Have the Same Slope With relations to Views. *H*<sub>*a*</sub>: At Least One Inequality amongst the factor levels.
+*H*<sub>0</sub>: All Positions Have the Same Slope With relations to Views vs *H*<sub>*a*</sub>: At Least One Inequality amongst the factor levels.
 
 Outcome: Reject the null in favor of the alternative.
 
-``` r
-knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[6,])
-```
-
-|               |   Sum.Sq|   Df|  F.value|  Pr..F.|
-|---------------|--------:|----:|--------:|-------:|
-| Views:Unknown |  4993376|    5|  830.546|       0|
-
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Sum.Sq
+</th>
+<th style="text-align:right;">
+Df
+</th>
+<th style="text-align:right;">
+F.value
+</th>
+<th style="text-align:right;">
+Pr..F.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Views:Unknown
+</td>
+<td style="text-align:right;">
+4993376
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+830.546
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
 Mean Comparisons
 ================
-
-Because I have a covariate and my primary area of interest in the interaction between views and clicks, I am doing a Tukey means comparison at 3 points along the values.
 
 Position
 --------
 
-![](Avazu_Click_Through_Rate_Analysis_files/figure-markdown_github/unnamed-chunk-12-1.png)
+Because I have a covariate and my primary area of interest in the interaction between views and clicks, I am doing a Tukey means comparison at 3 points along the values. What we can see is that at the beginning of the Views, the separation between the two is lesser, where we have only two groups. However, as Views increases they each start to separate into their own groups. At high numbers of views we can establish a signficiant difference between all 3 positions, with banner position 0 having the highest mean.
 
-| Position |     Views|        lsmean|           SE|    df|       lower.CL|     upper.CL| .group |
-|:---------|---------:|-------------:|------------:|-----:|--------------:|------------:|:-------|
-| 2        |    102.00|      8.613105|     6.342798|  2052|      -8.946591|     26.17280| a      |
-| 1        |    102.00|     39.876129|     6.475972|  2052|      21.947748|     57.80451| b      |
-| 0        |    102.00|     44.258574|     6.022475|  2052|      27.585677|     60.93147| b      |
-| 2        |  12210.75|  -1417.228279|   807.753612|  2052|   -3653.450757|    818.99420| a      |
-| 1        |  12210.75|    450.962026|   748.423899|  2052|   -1621.009331|   2522.93338| b      |
-| 0        |  12210.75|    483.587571|   748.417327|  2052|   -1588.365591|   2555.54073| c      |
-| 2        |  68559.25|  -8052.432009|  4539.279864|  2052|  -20619.184444|   4514.32043| a      |
-| 1        |  68559.25|   2363.964911|  4204.265798|  2052|   -9275.319080|  14003.24890| b      |
-| 0        |  68559.25|   2528.020729|  4204.290867|  2052|   -9111.332664|  14167.37412| c      |
+![](Avazu_Click_Through_Rate_Analysis_files/figure-markdown_github/unnamed-chunk-12-1.png)
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+Position
+</th>
+<th style="text-align:right;">
+Views
+</th>
+<th style="text-align:right;">
+lsmean
+</th>
+<th style="text-align:right;">
+SE
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+lower.CL
+</th>
+<th style="text-align:right;">
+upper.CL
+</th>
+<th style="text-align:left;">
+.group
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+-568.1410
+</td>
+<td style="text-align:right;">
+330.2460
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-1482.4092
+</td>
+<td style="text-align:right;">
+346.1273
+</td>
+<td style="text-align:left;">
+a
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+206.1607
+</td>
+<td style="text-align:right;">
+306.1976
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-641.5309
+</td>
+<td style="text-align:right;">
+1053.8524
+</td>
+<td style="text-align:left;">
+b
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+5000
+</td>
+<td style="text-align:right;">
+221.9675
+</td>
+<td style="text-align:right;">
+306.1820
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-625.6809
+</td>
+<td style="text-align:right;">
+1069.6160
+</td>
+<td style="text-align:left;">
+c
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+15000
+</td>
+<td style="text-align:right;">
+-1745.6708
+</td>
+<td style="text-align:right;">
+992.4636
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-4493.2529
+</td>
+<td style="text-align:right;">
+1001.9114
+</td>
+<td style="text-align:left;">
+a
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+15000
+</td>
+<td style="text-align:right;">
+545.6556
+</td>
+<td style="text-align:right;">
+919.4872
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-1999.8953
+</td>
+<td style="text-align:right;">
+3091.2066
+</td>
+<td style="text-align:left;">
+b
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+15000
+</td>
+<td style="text-align:right;">
+584.7870
+</td>
+<td style="text-align:right;">
+919.4827
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-1960.7516
+</td>
+<td style="text-align:right;">
+3130.3256
+</td>
+<td style="text-align:left;">
+c
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+50000
+</td>
+<td style="text-align:right;">
+-5867.0250
+</td>
+<td style="text-align:right;">
+3310.2433
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-15031.2557
+</td>
+<td style="text-align:right;">
+3297.2056
+</td>
+<td style="text-align:left;">
+a
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+50000
+</td>
+<td style="text-align:right;">
+1733.8878
+</td>
+<td style="text-align:right;">
+3066.0297
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-6754.2506
+</td>
+<td style="text-align:right;">
+10222.0262
+</td>
+<td style="text-align:left;">
+b
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+50000
+</td>
+<td style="text-align:right;">
+1854.6550
+</td>
+<td style="text-align:right;">
+3066.0451
+</td>
+<td style="text-align:right;">
+2052
+</td>
+<td style="text-align:right;">
+-6633.5260
+</td>
+<td style="text-align:right;">
+10342.8361
+</td>
+<td style="text-align:left;">
+c
+</td>
+</tr>
+</tbody>
+</table>
+Conclusion
+==========
+
+We've established that clickls do increase with views, and that position as well as our unknown category both effect the mean as well as the slope between click and views. Considering aun known category as a fixed and unchangeable variable, we can provide guidance to advertisers that banner position 0 has a significantly higher click-through-rate as compared to banner position 1 and 2.
+
+Data, Code, and Notes
+=====================
+
+Location of the Raw Data: <https://www.kaggle.com/c/avazu-ctr-prediction> Full Code and Aggregated Data on Github: <https://github.com/cbagg/avazu_click_through>
