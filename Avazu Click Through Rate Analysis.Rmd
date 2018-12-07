@@ -1,0 +1,255 @@
+---
+output: 
+  github_document: default
+  pdf_document:
+    latex_engine: pdflatex
+title: "Advertisement Placement in Mobile Applications"
+author: "Chase Baggett"
+geometry: margin=1in
+fontfamily: mathpazo
+fontsize: 11pt
+endnote: no
+mainfont: Times New Roman
+---
+
+```{r,include=FALSE}
+library(data.table)
+library(car)
+library(ggpubr)
+library(lsmeans)
+library(multcompView)
+library(ggplot2)
+library(gridExtra)
+click_through <- read.csv("avazu_app_clicks.csv")
+click_through$Unknown <- as.factor(click_through$Unknown)
+click_through$Position <- as.factor(click_through$Position)
+```
+
+#Introduction
+
+In 2015, Avazu, an online digital marketing company released 10 days of their data representing marketing compaigns within mobile platforms. It amounts to over 40 million ad views, and associated to that, a click through result of true or false. This data does not come from a conducted experiment, but from the real world, therefore is observational in nature. In addition to that, like the real world, the data is dirty. 
+
+It is made more complicated by data anonymization where category descriptions or even names have been hidden from the researchers for reasons of confidentiality. For instance, we are given a cagegorical banner position, but not where that position is, which means we cannot hypothesize from a position of knowledge about the similarity of any positions. We are also given categorical variables they believe are important, with no context. Despite this, it is a valuable insight into the world of online marketing, and the size and reach of the data provides interesting research opportunities.
+
+To put it in context, companies pay to advertise within the platform, and have many options for advertising. The goal of advertising for many companies is to maximize click per view, or click-through-rate. Specifically for this exercise, I intend to try to understand the effect of advertisement position on the click-through rate, after adjustment for other variables. 
+
+#Data
+
+To create a dataset from the raw level clicks and views, I am recording the view and click count of advertiements over the 10 days. The data I am working with is raw web traffic over the 240 hours. Given I have assembled the data from raw clicks we could consider this data simulated, though it is drawn from the real world, I cannot be certain of many aspects of the design and am making some assumptions. I will therefore state this data is simulated in that I constructed the dataset from the raw views and clicks making assumptions about experimental design not provided by the company. 
+
+It is a crossed factoral observational study. Every adertisement has an associated position that it was placed within the app. All factor levels are represented within each of the other factor levels randomly. There is no nesting. It is an entirely random design. I am treating all variables as fixed becsause I have no need to generalize beyond the levels of the data.  However, we a continuous variavble of importance, and therefore must test the slope to determine in an ANCOVA is needed. 
+
+There are a total of four variables in the data.
+
+|Variable | Structure  | Type  | Lvls | Description |
+|------------|---------|------|---|---------------------------------------|
+| Clicks  | Continuous|Response| NA | The nunber of times the advertisement was clicked. |
+| Views      | Continuous | Fixed | NA | The number of times a given advertisement was viewed. |
+| Position | Factor | Fixed | 3 | The position on the site of the advertisement. |
+| Unknown | Factor | Fixed | 7 | An unkown anonymized categorical variable. |
+
+
+#Exploring the Data
+
+The purpose of an advertiser is to maximize the numbers of clicks per view, or stated differently, they are trying to increase the slope between Views and Clicks. This lends itself naturally to an ANCOVA model with Views as a continuous predictor. Our primarily point of concern is finding factors that increase the slope between clicks and views, or industry terms, the click-through-rate. 
+
+As we can see below, there are some very clear and identifiable linear trends in the data, where slope and intercept both change, suggesting an interaction term will be necessary. For Unknown, Avazu would not tell the researchers what it meant, yet chose to include it in the data anyway. It has been been made entirely anonymous, and we therefore cannot attribute any specific meaning to it. Position represents one of three locations to place an advertisement within the mobile app. 
+
+
+```{r,echo=FALSE,fig.width=6,fig.height=4,fig.align='center'}
+ggplot(click_through,
+         aes(
+           y = Clicks,
+           x = Views,
+           color = Unknown,
+           shape=Position
+         )) + geom_point(alpha = 1) + theme(legend.position="bottom") + ggtitle("Click Through Rate")
+```
+
+
+#Methods & Tests
+
+#All Equal Slopes Equal to Zero
+
+In order to know which kind of model to fit, we must first test the slope of Click to Views. If we establish the slope is zero, we can use an ANOVA model, but if the slope is non-zero, we must use an ANCOVA model. 
+
+For a function of $y = \beta_0 + \beta_1Views$:
+
+$H_o: \beta_1 = 0$
+$H_a: \beta_1 \ne 0$
+
+As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope is non-zero. This means we must use an ANCOVA model to account for the covariate. 
+
+```{r,echo=F}
+all_zero <- lm(Clicks~Views,data=click_through)
+all_zero_anova <- anova(all_zero)
+knitr::kable(data.frame(all_zero_anova))
+```
+
+
+#All Slopes Equal by Position
+
+Now, we have established the slope is non-zero, but we have not established that the slopes are different. We must use this to decide to use an equal or different slopes model. For a function of $y = \beta_0 + \beta_1Views + \beta_2Position + \beta_3Views*Position$:
+
+$H_o: \beta_3 = 0$
+$H_a: \beta_3 \ne 0$
+
+As we can see below, with a near zero p-value, we reject the null hypothesis in favor the alternative that the slope are not equal, and therefore must use a different slopes model. 
+
+```{r,echo=F}
+all_zero <- lm(Clicks~Views + Position + Views*Position,data=click_through)
+all_zero_anova <- anova(all_zero)
+knitr::kable(data.frame(all_zero_anova))
+```
+
+#Full ANCOVA Model
+
+Now I add Unknown category to the model and test the equal slopes assumption for the Unknown category. For a function of 
+
+$$y = \beta_0 + \beta_1Views + \beta_2Position + \beta_3Unknown +  \beta_4Views*Position + \beta_5Unknown*Views$$
+```{r,echo=F}
+ancova_model_full <- lm(Clicks ~ 
+              #Main Effects
+              Views + Position + Unknown +
+              #Fixed Interactions
+              Position:Views + Unknown:Views 
+              ,data=click_through)
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3")))
+```
+
+#Hypothesis Tests
+
+This model has Five Hypothesis Tests.
+
+##Test for Intercept
+
+$H_0: \beta_0 = 0$
+$H_a: \beta_0 \ne 0$  
+Outcome: Reject the Null in Favor of the Alternative
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[1,])
+```
+
+
+##Test For Slope Across Factors
+
+$H_0: \beta_1 = 0$
+$H_a: \beta_1 \ne 0$  
+Outcome: Fail to Reject the Null. We could think of this as no slope between click and views in common across the factors. 
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[2,])
+```
+
+##Test for Position Mean
+
+$H_0: \mu_1 = \mu_2 = \mu_3$
+$H_a:$ At Least One Inequality
+Outcome: Reject the null in favor of the alternative. 
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[3,])
+```
+
+##Test for Unknown Category Mean
+$H_0: \mu_1 = \mu_2 = \mu_3 = \mu_4 = \mu_5 = \mu_6 = \mu_7$
+$H_a:$ At Least one Inequality
+Outcome: Reject the null in favor of the alternative. 
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[4,])
+```
+
+
+##Test for Difference in Slope by Position
+
+$H_0:$ All Positions Have the Same Slope With relations to Views.
+$H_a:$ At Least One Inequality amongst the factor levels. 
+
+Outcome: Reject the null in favor of the alternative.
+
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[5,])
+```
+
+##Test for Difference in Slope by Unknown Category
+Where $Position_1$,$Position_2$, and $Position_3$ are 0/1 variables for category.
+
+$H_0:$ All Positions Have the Same Slope With relations to Views. 
+$H_a:$ At Least One Inequality amongst the factor levels. 
+
+Outcome: Reject the null in favor of the alternative.
+
+```{r}
+knitr::kable(data.frame(Anova(ancova_model_full,type = "3"))[6,])
+```
+
+#Mean Comparisons
+
+Because I have a covariate and my primary area of interest in the interaction between views and clicks, I am doing a Tukey means comparison at 3 points along the values. 
+
+##Position
+
+```{r,echo=F,fig.width=8,fig.height=4,warning=FALSE,error=FALSE}
+pos_means <- lsmeans(ancova_model_full,
+        ~ Position:Views,at=list(Views=quantile(click_through$Views,probs = c(.5,.75,.95))),
+        adjust="tukey") 
+
+pos_means_letters <- cld(pos_means,
+                                  alpha=0.05,by="Views",
+                         
+                                  Letters=letters,      ### Use lower-case letters for .group
+                                  adjust="tukey")
+pos_means_letters$.group=gsub(" ", "", pos_means_letters$.group)
+
+###  Remove spaces in .group  
+
+### Plot
+
+
+pd = position_dodge(0.4)  
+ggplot(pos_means_letters,
+       aes(x     = factor(Views),
+           y     = lsmean,
+           color = Position,
+           label = .group)) +
+
+    geom_point(shape  = 15,
+               size   = 4,
+             position = pd) +
+
+    geom_errorbar(aes(ymin  =  lower.CL,
+                      ymax  =  upper.CL),
+                      width =  0.2,
+                      size  =  0.7,
+                   position = pd) +
+
+    theme_bw() +
+    theme(axis.title   = element_text(face = "bold"),
+          axis.text    = element_text(face = "bold"),
+          plot.caption = element_text(hjust = 0)) +
+
+    ylab("Least Square Means (Tukey Adjusted)") +
+    ggtitle ("Banner Positions",
+
+             subtitle = "Three Banner Locations") +
+
+          
+                            geom_text(nudge_x = c(0.135, 0, -0.135,0.135, 0, -0.135,0.135, 0, -0.135),
+                                        color   = "black")
+knitr::kable(data.frame(pos_means_letters),row.names = F)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
